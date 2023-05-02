@@ -13,7 +13,12 @@ public class FileWorker {
     private String FILE_NAME = "news.txt";
     private String CSV_FILE_NAME = "news.csv";
 
-    public void loadImage(String imageUrl, int number) {
+    /**
+     * Сохранение изображения
+     * @param imageUrl - ссылка на изображение
+     * @param number - номер для сохранения
+     */
+    public void saveImage(String imageUrl, int number) {
         try {
             BufferedImage img = ImageIO.read(new URL(imageUrl));
             StringBuilder sb = new StringBuilder(this.BASE_PATH);
@@ -33,6 +38,10 @@ public class FileWorker {
         }
     }
 
+    /**
+     * @param text - текст
+     * @param number - номер для сохранения
+     */
     public void saveText(String text, int number) {
         try {
             StringBuilder sb = new StringBuilder(this.BASE_PATH);

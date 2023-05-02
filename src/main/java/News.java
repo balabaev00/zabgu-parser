@@ -58,6 +58,9 @@ public class News {
         return markers;
     }
 
+    /**
+     * @return Маркеры в строковом типе
+     */
     public String getMarkersString() {
         StringBuilder sb = new StringBuilder();
         for(int i=0; i<this.markers.size(); i++) {

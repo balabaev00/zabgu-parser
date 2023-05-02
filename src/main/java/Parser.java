@@ -15,6 +15,7 @@ import java.util.List;
 public class Parser {
         private final String HTTP_URL = "https://zabgu.ru/";
         private final FileWorker fileWorker = new FileWorker();
+        private final RegexWorker regexWorker = new RegexWorker();
 
         // Формируем строку из элементов дат
         private String getDate(Elements dateElements, Element yearElement) {
@@ -47,7 +48,8 @@ public class Parser {
         public List<News> getNews(int pageCount) {
             List<News> news = new ArrayList<>();
             try {
-                int counter = 0;
+                int counter = 1; // кол-во новостей
+                int countСoincidence = 0; // кол-во совпадений
                 for (int i=1; i<=pageCount; i++) {
                     StringBuilder urlSb = new StringBuilder(HTTP_URL);
                     urlSb.append("php/news.php?category=1&page=");
@@ -71,11 +73,12 @@ public class Parser {
                                     .first()
                                     .attr("src")
                                     .replace("../", this.HTTP_URL);
-                            this.fileWorker.loadImage(imageUrl, counter);
+                            this.fileWorker.saveImage(imageUrl, counter);
 
                             // Работаем с полным текстом
                             Element fullUrlElement = element.getElementsByAttributeValueContaining("href", "/php").first();
                             String fullNewsText = this.getFullText(fullUrlElement);
+                            countСoincidence+=this.regexWorker.getCount(fullNewsText, "ЗабГУ");
                             this.fileWorker.saveText(fullNewsText, counter);
 
                             // Работаем с заголовком
@@ -107,6 +110,8 @@ public class Parser {
                         }
                     }
                 }
+                System.out.print("Итог совпадений ");
+                System.out.println(countСoincidence);
                 this.fileWorker.saveCsv(news);
             } catch (Exception e) {
                 System.out.println("ERROR");
