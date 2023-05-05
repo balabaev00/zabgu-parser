@@ -1,15 +1,18 @@
-import java.util.ArrayList;
 import java.util.List;
 
 public class News {
     private String title;
     private String date;
+    private String text;
+    private String url;
     private List<String> markers;
 
 
-    public News(String title, String date, List<String> markers) {
+    public News(String url, String title, String date, String text, List<String> markers) {
         this.title = title;
+        this.url = url;
         this.date = date;
+        this.text = text;
         this.markers = markers;
     }
 
@@ -23,8 +26,7 @@ public class News {
         sb.append(this.date);
 
         if (markers.size()!=0) {
-            sb.append(", ");
-            sb.append("Маркеры: ");
+            sb.append(", Маркеры: ");
             if (markers.size() == 1) {
                 sb.append(markers.get(0));
             } else {
@@ -52,6 +54,10 @@ public class News {
 
     public String getDate() {
         return date;
+    }
+
+    public String getText() {
+        return text;
     }
 
     public List<String> getMarkers() {

@@ -2,13 +2,13 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.List;
 
 public class FileWorker {
-    private String BASE_PATH = "C:\\Users\\supur\\IdeaProjects\\news\\data";
+    private String BASE_PATH =  Paths.get("")
+            .toAbsolutePath()
+            .toString() + FileSystems.getDefault().getSeparator() + "data";
     private String IMAGE_NAME = "news.png";
     private String FILE_NAME = "news.txt";
     private String CSV_FILE_NAME = "news.csv";
@@ -22,10 +22,10 @@ public class FileWorker {
         try {
             BufferedImage img = ImageIO.read(new URL(imageUrl));
             StringBuilder sb = new StringBuilder(this.BASE_PATH);
-            sb.append("\\");
+            sb.append(FileSystems.getDefault().getSeparator());
             sb.append(number);
             Files.createDirectories(Paths.get(sb.toString()));
-            sb.append("\\");
+            sb.append(FileSystems.getDefault().getSeparator());
             sb.append(this.IMAGE_NAME);
             File file = new File(sb.toString());
             if (!file.exists()) {
@@ -39,22 +39,24 @@ public class FileWorker {
     }
 
     /**
-     * @param text - текст
-     * @param number - номер для сохранения
+     * @param news - новости
      */
-    public void saveText(String text, int number) {
+    public void saveText(List<News> news) {
         try {
-            StringBuilder sb = new StringBuilder(this.BASE_PATH);
-            sb.append("\\");
-            sb.append(number);
-            sb.append("\\");
-            Files.createDirectories(Paths.get(sb.toString()));
-            sb.append(FILE_NAME);
-            BufferedWriter writer = new BufferedWriter(new FileWriter(sb.toString(), false));
-            // запись всей строки
-            writer.write(text);
-            writer.flush();
-            writer.close();
+            for (int i=0; i<=news.size(); i++) {
+                StringBuilder sb = new StringBuilder(this.BASE_PATH);
+                sb.append(FileSystems.getDefault().getSeparator());
+                sb.append(i);
+                sb.append(FileSystems.getDefault().getSeparator());
+                Files.createDirectories(Paths.get(sb.toString()));
+                sb.append(FILE_NAME);
+                System.out.println(sb.toString());
+                BufferedWriter writer = new BufferedWriter(new FileWriter(sb.toString(), false));
+                // запись всей строки
+                writer.write(news.get(i).getText());
+                writer.flush();
+                writer.close();
+            }
         }
         catch(IOException ex){
             System.out.println("Save file error");
@@ -65,7 +67,7 @@ public class FileWorker {
     public void saveCsv(List<News> news) {
         try {
             StringBuilder sb = new StringBuilder(this.BASE_PATH);
-            sb.append("\\");
+            sb.append(FileSystems.getDefault().getSeparator());
             sb.append(this.CSV_FILE_NAME);
             BufferedWriter  writer = new BufferedWriter(
                             new OutputStreamWriter(
@@ -74,12 +76,9 @@ public class FileWorker {
             StringBuilder csvBuilder = new StringBuilder();
 
             // titles
-            csvBuilder.append("title");
-            csvBuilder.append(",");
-            csvBuilder.append("date");
-            csvBuilder.append(",");
-            csvBuilder.append("markers");
-            csvBuilder.append("\n");
+            csvBuilder.append("title,");
+            csvBuilder.append("date,");
+            csvBuilder.append("markers\n");
 
             news.forEach(newsElement -> {
                 csvBuilder.append(newsElement.getTitle());
