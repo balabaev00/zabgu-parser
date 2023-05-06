@@ -59,6 +59,7 @@ public class News {
     public String getText() {
         return text;
     }
+    public String getUrl() {return url;}
 
     public List<String> getMarkers() {
         return markers;

@@ -41,22 +41,19 @@ public class FileWorker {
     /**
      * @param news - новости
      */
-    public void saveText(List<News> news) {
+    public void saveText(String text, int number) {
         try {
-            for (int i=0; i<=news.size(); i++) {
                 StringBuilder sb = new StringBuilder(this.BASE_PATH);
                 sb.append(FileSystems.getDefault().getSeparator());
-                sb.append(i);
+                sb.append(number);
                 sb.append(FileSystems.getDefault().getSeparator());
                 Files.createDirectories(Paths.get(sb.toString()));
                 sb.append(FILE_NAME);
-                System.out.println(sb.toString());
                 BufferedWriter writer = new BufferedWriter(new FileWriter(sb.toString(), false));
                 // запись всей строки
-                writer.write(news.get(i).getText());
+                writer.write(text);
                 writer.flush();
                 writer.close();
-            }
         }
         catch(IOException ex){
             System.out.println("Save file error");
