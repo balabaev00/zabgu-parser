@@ -61,6 +61,9 @@ public class FileWorker {
         }
     }
 
+    /**
+     * @param news - Список новостей
+     */
     public void saveCsv(List<News> news) {
         try {
             StringBuilder sb = new StringBuilder(this.BASE_PATH);
