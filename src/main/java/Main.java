@@ -1,3 +1,4 @@
+import java.sql.SQLException;
 import java.util.List;
 
 public class Main {
@@ -5,7 +6,7 @@ public class Main {
     private static final String DEFAULT_SUBSTRING= "ЗабГУ";
     private static final FileWorker fileWorker= new FileWorker();
     private static final RegexWorker regexWorker = new RegexWorker();
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         if (args.length > 0) {
             if (args[0].equals("/parse")) {
                 int pageCount = Integer.parseInt(args[1]);
@@ -20,6 +21,8 @@ public class Main {
             saveImages(news);
             saveText(news);
             getSubStringCount(news, DEFAULT_SUBSTRING);
+            DatabaseWorker databaseWorker = new DatabaseWorker();
+            databaseWorker.saveNews(news);
         }
     }
 

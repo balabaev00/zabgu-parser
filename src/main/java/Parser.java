@@ -48,7 +48,9 @@ public class Parser {
 
             // Формируем текст
             StringBuilder fullNewsText = new StringBuilder();
-            fullDocumentText.forEach(text -> fullNewsText.append(text.text()));
+            for (int i=2; i< fullDocumentText.size(); i++ ) {
+                fullNewsText.append(fullDocumentText.get(i).text());
+            }
             return fullNewsText.toString();
         }
 
