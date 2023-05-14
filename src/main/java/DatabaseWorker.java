@@ -17,6 +17,9 @@ public class DatabaseWorker {
         return connection;
     }
 
+    /**
+     * Создание таблицы News
+     */
     private void createNewsTable() throws SQLException {
         Statement statement = null;
 
@@ -34,7 +37,6 @@ public class DatabaseWorker {
 
             // выполнить SQL запрос
             statement.execute(createTableSQL);
-            System.out.println("Table is created!");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -44,6 +46,10 @@ public class DatabaseWorker {
         }
     }
 
+    /**
+     * Сохранение новостей
+     * @param news - массив новостей
+     */
     public void saveNews(List<News> news) throws SQLException {
         StringBuilder sb = new StringBuilder("INSERT INTO news(title,url,text,date,markers) VALUES ");
         for(int i=0; i<news.size(); i++) {
@@ -74,7 +80,6 @@ public class DatabaseWorker {
             sb.append("\n");
         }
         sb.append(";");
-        System.out.println(sb.toString());
 
         Statement statement = null;
 
@@ -82,7 +87,6 @@ public class DatabaseWorker {
             statement = this.connection.createStatement();
 
             statement.execute(sb.toString());
-            System.out.println("Insert is done!");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -93,8 +97,6 @@ public class DatabaseWorker {
     }
 
     public DatabaseWorker() {
-        System.out.println("Testing connection to PostgreSQL JDBC");
-
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
@@ -102,8 +104,6 @@ public class DatabaseWorker {
             e.printStackTrace();
             return;
         }
-
-        System.out.println("PostgreSQL JDBC Driver successfully connected");
 
         try {
             this.connection = DriverManager
@@ -115,14 +115,11 @@ public class DatabaseWorker {
             e.printStackTrace();
             return;
         }
-
-        if (this.connection != null) {
-            System.out.println("You successfully connected to database now");
-        } else {
-            System.out.println("Failed to make connection to database");
-        }
     }
 
+    /**
+     * Закрытие соединения
+     */
     public void closeConnection() throws SQLException {
         if (this.connection!= null) {
             this.connection.close();
