@@ -23,6 +23,7 @@ public class Main {
             getSubStringCount(news, DEFAULT_SUBSTRING);
             DatabaseWorker databaseWorker = new DatabaseWorker();
             databaseWorker.saveNews(news);
+            databaseWorker.closeConnection();
         }
     }
 
