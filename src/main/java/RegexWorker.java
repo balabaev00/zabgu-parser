@@ -1,11 +1,14 @@
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Класс для работы с регулярными выражениями
+ */
 public class RegexWorker {
     /**
-     * @param text - текст в котором ищем подстроку
-     * @param subString - подстрока
-     * @return кол-во совпадений в тексте
+     * @param text String - текст в котором ищем подстроку
+     * @param subString String - подстрока
+     * @return Integer - кол-во совпадений в тексте
      */
     public int getCount(String text, String subString) {
         Pattern p = Pattern.compile(subString);

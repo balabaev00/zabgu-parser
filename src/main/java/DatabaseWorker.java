@@ -4,6 +4,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+/**
+ * Класс для работы с базой данных
+ */
 public class DatabaseWorker {
 
     //  Доступы
@@ -13,12 +16,17 @@ public class DatabaseWorker {
 
     private Connection connection;
 
+    /**
+     * Getter для connection
+     * @return соединение типа Connection
+     */
     public Connection getConnection() {
         return connection;
     }
 
     /**
      * Создание таблицы News
+     * Если таблица создана, то ничего не делать
      */
     private void createNewsTable() throws SQLException {
         Statement statement = null;
@@ -47,8 +55,8 @@ public class DatabaseWorker {
     }
 
     /**
-     * Сохранение новостей
-     * @param news - массив новостей
+     * Принимает массив новостей, сохраняет его в базу дааных
+     * @param news List<News> - массив новостей
      */
     public void saveNews(List<News> news) throws SQLException {
         StringBuilder sb = new StringBuilder("INSERT INTO news(title,url,text,date,markers) VALUES ");
@@ -96,6 +104,10 @@ public class DatabaseWorker {
         }
     }
 
+    /**
+     * Инициализация класса
+     * Устанавливает соедение к серверу PostgreSQL
+     */
     public DatabaseWorker() {
         try {
             Class.forName("org.postgresql.Driver");
@@ -113,12 +125,11 @@ public class DatabaseWorker {
         } catch (SQLException e) {
             System.out.println("Connection Failed");
             e.printStackTrace();
-            return;
         }
     }
 
     /**
-     * Закрытие соединения
+     * Закрытие соединения с базой данных
      */
     public void closeConnection() throws SQLException {
         if (this.connection!= null) {

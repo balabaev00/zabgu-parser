@@ -7,12 +7,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Класс для работы со страницами
+ * Парсит страницы и получает данные с них
+ */
 public class Parser {
         private final String HTTP_URL = "https://zabgu.ru/";
 
     /**
-     * @param newsElement элемент новостей
-     * @return дата ввиде строки
+     * Получение даты из новости
+     * @param newsElement Element элемент новостей
+     * @return String дата ввиде строки
      */
         // Формируем строку из элементов дат
         private String getDate(Element newsElement) {
@@ -21,6 +26,7 @@ public class Parser {
             Elements dateElements = datesElements.getElementsByClass("day");
             Element yearElement = datesElements.getElementsByClass("yearInTileNewsOnPageWithAllNews").first();
 
+            // Формируем дату
             StringBuilder sb = new StringBuilder();
             sb.append(dateElements.first().text());
             sb.append(" ");
@@ -29,8 +35,9 @@ public class Parser {
         }
 
     /**
-     * @param textElements элемент с текстом ссылкой
-     * @return полный текст
+     * Получение полного текста новости
+     * @param textElements Element - элемент с текстом ссылкой
+     * @return String - полный текст новости
      * @throws IOException
      */
         private String getFullText(Element textElements) throws IOException {
@@ -56,8 +63,9 @@ public class Parser {
 
 
     /**
-     * @param newsElement - элемент новостей
-     * @return список маркеров
+     * Получение маркеров новости
+     * @param newsElement Element - элемент новостей
+     * @return List<String> список маркеров
      */
         private List<String> getMarkers(Element newsElement) {
             Elements markerElements = newsElement
@@ -73,13 +81,23 @@ public class Parser {
             return markers;
         }
 
-        private String getTitle(Element newsElement) {
+    /**
+     * Получение заголовока
+     * @param newsElement Element - элемент с новостями
+     * @return title - String
+     */
+    private String getTitle(Element newsElement) {
             // Работаем с заголовком
             Elements titlesElement = newsElement.getElementsByClass("headline");
             String title = titlesElement.first().text();
             return title;
         }
 
+    /**
+     * Получение новостей
+     * @param document Document - документ с новостями
+     * @return Elements - список новостей
+     */
         private Elements getNewsElements(Document document) {
             Element newsElement = document.getElementById("news");
             Elements newsLineElements = newsElement.getElementsByClass("news_line");
@@ -87,8 +105,9 @@ public class Parser {
         }
 
     /**
-     * @param pageCount количество страниц новостей
-     * @return список новостей
+     * Получение списка новостей
+     * @param pageCount Integer - количество страниц новостей
+     * @return List<News> список новостей
      */
         public List<News> getNews(int pageCount) {
             List<News> news = new ArrayList<>();

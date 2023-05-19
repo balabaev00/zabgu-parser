@@ -5,6 +5,10 @@ import java.net.URL;
 import java.nio.file.*;
 import java.util.List;
 
+/**
+ * Класс для работы с файлами
+ * Позволяет сохранять текст в файлы, картинки, данные в csv
+ */
 public class FileWorker {
     private String BASE_PATH =  Paths.get("")
             .toAbsolutePath()
@@ -20,12 +24,23 @@ public class FileWorker {
      */
     public void saveImage(String imageUrl, int number) {
         try {
+            // Получаем буфер по URL
             BufferedImage img = ImageIO.read(new URL(imageUrl));
+
+            // Формируем путь к папке
             StringBuilder sb = new StringBuilder(this.BASE_PATH);
+
+            // Добавляем разделители папок для нашей системы
             sb.append(FileSystems.getDefault().getSeparator());
+
+            // Добавляем номер папки
             sb.append(number);
+
+            // Создаем дирректорию
             Files.createDirectories(Paths.get(sb.toString()));
             sb.append(FileSystems.getDefault().getSeparator());
+
+            // Добавляем название картинки
             sb.append(this.IMAGE_NAME);
             File file = new File(sb.toString());
             if (!file.exists()) {
@@ -39,16 +54,26 @@ public class FileWorker {
     }
 
     /**
-     * @param news - новости
+     * Создает и сохраняет текст в файл
+     * @param text String - текст новости
+     * @param number Integer - номер новости
      */
     public void saveText(String text, int number) {
         try {
+                // Создаем StringBuilder
                 StringBuilder sb = new StringBuilder(this.BASE_PATH);
+
+                // Добавляем разделители папок для нашей системы
                 sb.append(FileSystems.getDefault().getSeparator());
+
+                // Добавляем номер папки
                 sb.append(number);
                 sb.append(FileSystems.getDefault().getSeparator());
+
+                // Создаем дирректорию
                 Files.createDirectories(Paths.get(sb.toString()));
                 sb.append(FILE_NAME);
+
                 BufferedWriter writer = new BufferedWriter(new FileWriter(sb.toString(), false));
                 // запись всей строки
                 writer.write(text);
@@ -62,17 +87,22 @@ public class FileWorker {
     }
 
     /**
-     * @param news - Список новостей
+     * Создает и записывает файл CSV
+     * @param news List<News> - список новостей
      */
     public void saveCsv(List<News> news) {
         try {
+            // Формируем путь для папки
             StringBuilder sb = new StringBuilder(this.BASE_PATH);
             sb.append(FileSystems.getDefault().getSeparator());
             sb.append(this.CSV_FILE_NAME);
+
             BufferedWriter  writer = new BufferedWriter(
                             new OutputStreamWriter(
                             new FileOutputStream(sb.toString()), "Windows-1251")
             );
+
+            // Формируем текст для записи в CSV
             StringBuilder csvBuilder = new StringBuilder();
 
             // titles
