@@ -109,8 +109,8 @@ public class Parser {
      * @param pageCount Integer - количество страниц новостей
      * @return List<News> список новостей
      */
-        public List<News> getNews(int pageCount) {
-            List<News> news = new ArrayList<>();
+        public List<Elements> getNewsLine(int pageCount) {
+            List<Elements> elements = new ArrayList<>();
             try {
                 for (int i=1; i<=pageCount; i++) {
                     // Формируем url  новостям
@@ -121,37 +121,43 @@ public class Parser {
                     // Парсим страницу
                     Document document = Jsoup.connect(urlSb.toString()).get();
                     Elements newsLineElements = this.getNewsElements(document);
-                    for (int r =0; r<newsLineElements.size(); r++) {
-                        // Костыль из-за Забгу фронтендера
-                        Elements previewElements = newsLineElements.get(r).getElementsByClass("preview_new");
-                        Element previewEndElement = newsLineElements.get(r).getElementsByClass("preview_new_end").first();
-                        previewElements.add(previewEndElement);
-                        for (int j = 0; j < previewElements.size(); j++) {
-                            Element element = previewElements.get(j);
-
-                            String imageUrl = element
-                                    .getElementsByClass("img_news")
-                                    .first()
-                                    .attr("src")
-                                    .replace("../", this.HTTP_URL);
-
-                            news.add(
-                                    new News(
-                                            imageUrl,
-                                            this.getTitle(element),
-                                            this.getDate(element),
-                                            this.getFullText(
-                                                    element.getElementsByAttributeValueContaining("href", "/php").first()
-                                            ),
-                                            this.getMarkers(element)
-                                    )
-                            );
-                        }
-                    }
+                    elements.add(newsLineElements);
                 }
             } catch (Exception e) {
                 System.out.println("ERROR");
                 System.out.println(e.toString());
+            }
+            return elements;
+        }
+
+        public List<News> getNewsFromLine(Elements newsLineElements) throws IOException {
+            List<News> news = new ArrayList<>();
+            for (int r =0; r<newsLineElements.size(); r++) {
+                // Костыль из-за Забгу фронтендера
+                Elements previewElements = newsLineElements.get(r).getElementsByClass("preview_new");
+                Element previewEndElement = newsLineElements.get(r).getElementsByClass("preview_new_end").first();
+                previewElements.add(previewEndElement);
+                for (int j = 0; j < previewElements.size(); j++) {
+                    Element element = previewElements.get(j);
+
+                    String imageUrl = element
+                            .getElementsByClass("img_news")
+                            .first()
+                            .attr("src")
+                            .replace("../", this.HTTP_URL);
+
+                    news.add(
+                            new News(
+                                    imageUrl,
+                                    this.getTitle(element),
+                                    this.getDate(element),
+                                    this.getFullText(
+                                            element.getElementsByAttributeValueContaining("href", "/php").first()
+                                    ),
+                                    this.getMarkers(element)
+                            )
+                    );
+                }
             }
             return news;
         }
