@@ -18,8 +18,6 @@ public class RegexWorker {
         while (m.find()) {
             counter++;
         }
-        System.out.print("Количество совпадений в текстах ");
-        System.out.println(counter);
 
         return counter;
     }

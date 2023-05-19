@@ -43,7 +43,7 @@ public class Main {
                             news.addAll(threadNews);
                         }
 
-                        System.out.println("Спарсено " + (finalI+1) + " из " + DEFAULT_PAGE_COUNT + " страниц");
+                        System.out.println("Спарсена " + (finalI+1) + " из " + DEFAULT_PAGE_COUNT + " страниц");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -63,30 +63,57 @@ public class Main {
             fileWorker.saveCsv(news);
             saveImages(news);
             saveText(news);
-            getSubStringCount(news, DEFAULT_SUBSTRING);
+
+            // Работа с базой данных
             DatabaseWorker databaseWorker = new DatabaseWorker();
             databaseWorker.saveNews(news);
+            String text = databaseWorker.getNews();
+            int count = getSubStringCountByString(text, DEFAULT_SUBSTRING);
+            System.out.println("Количество подстрок слова '" + DEFAULT_SUBSTRING + "' в тексте = " + count);
             databaseWorker.closeConnection();
         }
     }
 
+    /**
+     * Сохранение картинок
+     * @param news List<News> спиоск новостей
+     */
     public static void saveImages(List<News> news) {
         for (int i=0; i<news.size(); i++) {
             fileWorker.saveImage(news.get(i).getUrl(), i);
         }
     }
 
+    /**
+     * Сохранение текста новосотей
+     * @param news List<News> спиоск новостей
+     */
     public static void saveText(List<News> news) {
         for (int i=0; i<news.size(); i++) {
             fileWorker.saveText(news.get(i).getText(), i);
         }
     }
 
-    public static int getSubStringCount(List<News> news, String subString) {
+    /**
+     * Получение кол-ва подстрок в тексте
+     * @param news List<News> спиоск новостей
+     * @return Integer - кол-во совпадений
+     */
+    public static int getSubStringCountByNews(List<News> news, String subString) {
         int count = 0;
         for (int i=0; i<news.size(); i++) {
             count += regexWorker.getCount(news.get(i).getText(), subString);
         }
+        return count;
+    }
+
+    /**
+     * Получение кол-ва подстрок в тексте
+     * @param text String - текст
+     * @return Integer - кол-во совпадений
+     */
+    public static int getSubStringCountByString(String text, String subString) {
+        int count = regexWorker.getCount(text, subString);
         return count;
     }
 }

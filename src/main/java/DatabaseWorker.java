@@ -1,7 +1,5 @@
-import java.sql.DriverManager;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,6 +11,9 @@ public class DatabaseWorker {
     static final String DB_URL = "jdbc:postgresql://127.0.0.1:5500/checker";
     static final String USER = "admin";
     static final String PASS = "1H1d3e9g";
+    private static final String INSERT_USERS_SQL = "INSERT INTO news" +
+            "  (text, title, date, markers, url) VALUES " +
+            " (?, ?, ?, ?, ?);";
 
     private Connection connection;
 
@@ -59,42 +60,48 @@ public class DatabaseWorker {
      * @param news List<News> - массив новостей
      */
     public void saveNews(List<News> news) throws SQLException {
-        StringBuilder sb = new StringBuilder("INSERT INTO news(title,url,text,date,markers) VALUES ");
-        for(int i=0; i<news.size(); i++) {
-            sb.append("(");
-            sb.append("'");
-            sb.append(news.get(i).getTitle());
-            sb.append("'");
-            sb.append(",");
-            sb.append("'");
-            sb.append(news.get(i).getUrl());
-            sb.append("'");
-            sb.append(",");
-            sb.append("'");
-            sb.append(news.get(i).getText());
-            sb.append("'");
-            sb.append(",");
-            sb.append("'");
-            sb.append(news.get(i).getDate());
-            sb.append("'");
-            sb.append(",");
-            sb.append("'");
-            sb.append(news.get(i).getMarkersString());
-            sb.append("'");
-            sb.append(")");
-            if (i!=news.size()-1) {
-                sb.append(",");
-            }
-            sb.append("\n");
-        }
-        sb.append(";");
+        for (int i = 0; i < news.size(); i++) {
 
+            Statement statement = null;
+            try {
+                PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USERS_SQL);
+                preparedStatement.setString(1, news.get(i).getText());
+                preparedStatement.setString(2, news.get(i).getTitle());
+                preparedStatement.setString(3, news.get(i).getDate());
+                preparedStatement.setString(4, news.get(i).getMarkersString());
+                preparedStatement.setString(5, news.get(i).getUrl());
+
+                System.out.println(preparedStatement);
+                preparedStatement.executeUpdate();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            } finally {
+                if (statement != null) {
+                    statement.close();
+                }
+            }
+        }
+    }
+
+    /**
+     * Получает из базы данных список текстов и формирует одну строку
+     * @return String - текст новостей
+     * @throws SQLException
+     */
+    public String getNews() throws SQLException {
         Statement statement = null;
+
+        String SQL = "SELECT text FROM news";
+        StringBuilder fullText = new StringBuilder();
 
         try {
             statement = this.connection.createStatement();
 
-            statement.execute(sb.toString());
+            ResultSet rs = statement.executeQuery(SQL.toString());
+
+            while (rs.next()) {
+               fullText.append(rs.getString("text") + "\n");
+            }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -102,7 +109,10 @@ public class DatabaseWorker {
                 statement.close();
             }
         }
+
+        return fullText.toString();
     }
+
 
     /**
      * Инициализация класса
